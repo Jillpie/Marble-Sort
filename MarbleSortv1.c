@@ -20,4 +20,6 @@ task main(){
 		arrayTotal =+ values[p];
 	}
 	arrayAvg = arrayTotal / 99;    //maybe its /100? 
-}
+} 
+
+//conclustion: This has not been tested, further testing is required.
