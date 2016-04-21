@@ -14,6 +14,10 @@
 	int LINESOLID = 2200;
 	int LINETRESH = 50;
 
+	int POTFALLRIGHT = 100;
+	int POTFALLLEFT = 2200;
+	int POTNEUTRAL= 1100;
+
 
 //FUNCTIONS:
 	void planReset(){
@@ -75,9 +79,39 @@
 	}
 
 	void solidGlassAction(){
-		if(time1(T1) > (2 * ACTIONTIME)/4){
-			
+		if((time1(T1) > (2 * ACTIONTIME)/4) && (time1(T1) < (3 * ACTIONTIME)/4))){
+			if(marbleTypeLine == 1){
+				if(SensorValue(potLine) > POTFALLRIGHT){
+					startMotor(lineMotor,MOTORPOWER);
+				}
+				else{
+					startMotor(lineMotor,0);
+				}
+			}
+			if(marbleTypeLine == 2){
+				if(SensorValue(potLine) > POTFALLLEFT){
+					startMotor(lineMotor,-MOTORPOWER);
+				}
+				else{
+					startMotor(lineMotor,0);
+				}
+			}
 		}
+		if(time1(T1) > (3 * ACTIONTIME)/4){
+			if(SensorValue(potLine) < POTNEUTRAL){
+				startMotor(lineMotor,-MOTORPOWER);
+			}
+			if(SensorValue(potLine) > POTNEUTRAL + 100){
+				startMotor(lineMotor,MOTORPOWER);
+			}
+			if((SensorValue(potLine) < POTNEUTRAL + 100) && (SensorValue(potLine) > POTNEUTRAL)){
+				startMotor(lineMotor,-MOTORPOWER);
+			}
+		}
+	}
+
+	void colorGlassAction(){
+
 	}
 
 
@@ -85,12 +119,17 @@ task main(){
 	while(true){
 		if(stage == 1){
 			solidGlassPlanAvg();
-
+			//solidGlassPlanSea();
+			clearTimer(T1);
+			if(solidGlassFin == 1){
+				stage = 2;
+			}
 
 		}
 		if(stage == 2){
 			servoAction();
-
+			solidGlassAction();
+			colorGlassAction();
 
 
 
