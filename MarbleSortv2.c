@@ -114,6 +114,17 @@
 
 	}
 
+	void safetyPro(){
+		if(SensorValue(potLine) < 10 || SensorValue(potLine) > 3990){
+			startMotor(lineMotor,0);
+		}
+	}
+
+	void calibrateRestart(){
+		
+		
+	}
+
 
 task main(){
 	while(true){
