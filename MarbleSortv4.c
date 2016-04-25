@@ -20,6 +20,8 @@
 
 	int timeOfMyLife;
 
+	int pistionAction = 0;
+
 	int solidGlassTol = 0;
 	int solidGlassI = 0;
 	int solidGlassAvg = 0;
@@ -39,16 +41,6 @@
 
 
 //FUNCTIONS:
-	void planReset(){
-		//solidGlassPLan:
-			solidGlassTol = 0;
-			solidGlassI = 0;
-			solidGlassAvg = 0;
-			solidGlassFin = 0;
-			LINESOLID = 2200;
-			LINETRESH = 50;
-	}
-
 	void solidGlassPlanSea(){
 		if(solidGlassFin == 0){
 			if(SensorValue(sensorLine) < LINESOLID + LINETRESH){
@@ -97,6 +89,15 @@
 		}
 		if(time1(T1) >= ACTIONTIME){
 			startMotor(tickServo,SERVOLETOUT);
+		}
+	}
+
+	void pistionAction(){
+		if(pistionStage == 1){
+
+		}
+		if(pistionStage == 0){
+
 		}
 	}
 
@@ -167,16 +168,17 @@
 
 task main(){
 	while(true){
+		pistionAction();
 		timeOfMyLife = time1(T1);
 		if(stage == 1){
 			solidGlassPlanSea();
 			colorGlassPlanSea();
 			clearTimer(T1);
-			if(solidGlassFin == 1){
+			if((solidGlassFin == 1) && (colorGlassFin == 1)){
 				stage = 2;
 				solidGlassFin = 0;
+				colorGlassFin = 0;
 			}
-
 		}
 		if(stage == 2){
 			servoAction();
@@ -184,10 +186,8 @@ task main(){
 			colorGlassAction();
 			if(time1(T1) > ACTIONTIME + 1000){
 				startMotor(lineMotor,0);
-				solidGlassFin = 0;
 				stage = 1;
 			}
-
 		}
 	}
 }
