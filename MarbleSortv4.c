@@ -77,6 +77,7 @@
 	}
 
 	void colorGlassPlanSea(){
+		turnFlashlightOn(lightFlashlight, -127);
 		if(colorGlassFin == false){
 			if(SensorValue(sensorLight) < LIGHTCOLOR + COLORTRESH){
 				colorGlassColor ++;
@@ -154,33 +155,34 @@
 	}
 
 	void colorGlassAction(){
-		if((time1(T1) > ((2 * ACTIONTIME)/4)) && (time1(T1) < ((3 * ACTIONTIME)/4))){
-			if(marbleTypeLine == false){
-				if(SensorValue(potLine) > POTFALLRIGHT){
-					startMotor(lineMotor,MOTORPOWER);
+		turnFlashlightOff(lightFlashlight);
+		if((time1(T1) > ((1 * ACTIONTIME)/4)) && (time1(T1) < ((2 * ACTIONTIME)/4))){
+			if(marbleColorLight == false){
+				if(SensorValue(potLight) > POTFALLRIGHT){
+					startMotor(lightMotor,MOTORPOWER);
 				}
 				else{
-					startMotor(lineMotor,0);
+					startMotor(lightMotor,0);
 				}
 			}
-			if(marbleTypeLine == true){
-				if(SensorValue(potLine) < POTFALLLEFT){
-					startMotor(lineMotor,-MOTORPOWER);
+			if(marbleColorLight == true){
+				if(SensorValue(potLight) < POTFALLLEFT){
+					startMotor(lightMotor,-MOTORPOWER);
 				}
 				else{
-					startMotor(lineMotor,0);
+					startMotor(lightMotor,0);
 				}
 			}
 		}
-		if(time1(T1) > (3 * ACTIONTIME)/4){
-			if(SensorValue(potLine) < POTNEUTRAL + 100){
-				startMotor(lineMotor,-MOTORPOWER);
+		if(time1(T1) > (2 * ACTIONTIME)/4){
+			if(SensorValue(potLight) < POTNEUTRAL + 100){
+				startMotor(lightMotor,-MOTORPOWER);
 			}
-			if(SensorValue(potLine) > POTNEUTRAL - 100){
-				startMotor(lineMotor,MOTORPOWER);
+			if(SensorValue(potLight) > POTNEUTRAL - 100){
+				startMotor(lightMotor,MOTORPOWER);
 			}
-			if((SensorValue(potLine) < POTNEUTRAL + 100) && (SensorValue(potLine) > POTNEUTRAL - 100)){
-				startMotor(lineMotor,0);
+			if((SensorValue(potLight) < POTNEUTRAL + 100) && (SensorValue(potLight) > POTNEUTRAL - 100)){
+				startMotor(lightMotor,0);
 			}
 		}
 
@@ -193,18 +195,21 @@ task main(){
 			solidGlassPlanSea();
 			colorGlassPlanSea();
 			clearTimer(T1);
+
 			if((solidGlassFin == true) && (colorGlassFin == 1)){
 				stage = true;
 				solidGlassFin = false;
-				colorGlassFin = 0;
+				colorGlassFin = false;
 			}
 		}
 		if(stage == true){
 			servoAction();
 			solidGlassAction();
 			colorGlassAction();
+
 			if(time1(T1) > ACTIONTIME + 1000){
 				startMotor(lineMotor,0);
+				startMotor(lightMotor,0);
 				stage = false;
 			}
 		}
