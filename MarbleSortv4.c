@@ -8,37 +8,38 @@
 #pragma config(Motor,  port5,           lineMotor,     tmotorVex393_MC29, openLoop)
 #pragma config(Motor,  port6,           tickServo,     tmotorServoStandard, openLoop)
 
-//VARLIBES AND CONSTANTS:
-	int stage = 1;
-	int ACTIONTIME = 4000;
-	int PLANNINGAVG;
+//VARIBLES AND CONSTANTS:
+	//Task Main FLow Control and Debug:
+		int stage = 1;
 
-	int MOTORPOWER = 21;
+	//Planning Functions:
+		int SEAVALUE = 20;
+		//Solid Glass Plan Sea:
+			int marbleTypeLine;
+			int solidGlassSolid;
+			int solidGlassGlass;
+			int solidGlassFin = 0;
+			int LINESOLID = 2500;
+			int LINETRESH = 50;
 
-	int SERVOLETIN = -110;
-	int SERVOLETOUT = 110;
+	//Action Functions:
+		int ACTIONTIME = 4000;
+			//Servo Action:
+				int SERVOLETIN = -110;
+				int SERVOLETOUT = 110;
 
-	int timeOfMyLife;
+	//Other Functions:
+		//Pistion Action:
+			bool pistionAction = 0;
 
-	int pistionAction = 0;
-
-	int solidGlassTol = 0;
-	int solidGlassI = 0;
-	int solidGlassAvg = 0;
-	int solidGlassFin = 0;
-	int LINESOLID = 2500;
-	int LINETRESH = 50;
-	int marbleTypeLine;
-
-	int solidGlassSolid;
-	int solidGlassGlass;
-
-	int POTFALLRIGHT = 650;
-	int POTFALLLEFT = 3200;
-	int POTNEUTRAL= 1900;
-
-	int SEAVALUE = 20;
-
+	//Universal Constants:
+		int POTFALLRIGHT = 650;
+		int POTFALLLEFT = 3200;
+		int POTNEUTRAL= 1900;
+		int MOTORPOWER = 21;
+		int POTFALLRIGHT = 650;
+		int POTFALLLEFT = 3200;
+		int POTNEUTRAL= 1900;
 
 //FUNCTIONS:
 	void solidGlassPlanSea(){
@@ -63,7 +64,7 @@
 	}
 
 	void colorGlassPlanSea(){
-		if(solidGlassFin == 0){
+		if(colorGlassFin == 0){
 			if(SensorValue(sensorLine) < LINESOLID + LINETRESH){
 				solidGlassSolid ++;
 				solidGlassGlass = 0;
@@ -169,7 +170,6 @@
 task main(){
 	while(true){
 		pistionAction();
-		timeOfMyLife = time1(T1);
 		if(stage == 1){
 			solidGlassPlanSea();
 			colorGlassPlanSea();
