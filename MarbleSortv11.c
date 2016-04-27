@@ -188,28 +188,26 @@
 	}
 
 task main(){
-	while(true){
-		pistionAction();
-		if(stage == false){
-			solidGlassPlanSea();
+	while(true){								//Main Loop everytihng should be in; unless it should be ran only once
+		pistionAction();						//Not part of a phase; preforms piston function 
+		if(stage == false){						//If planning stage:
+			solidGlassPlanSea();				//Run these functions
 			colorGlassPlanSea();
-			clearTimer(T1);
-
-			if((solidGlassFin == true) && (colorGlassFin == 1)){
-				stage = true;
+			if((solidGlassFin == true) && (colorGlassFin == true)){
+				stage = true;					//Sets the phase to Action unlimatly making planning complete
 				solidGlassFin = false;
-				colorGlassFin = false;
+				colorGlassFin = false;			//Sets the planning stage functions to false making the program run planning when its done after action
+				clearTimer(T1);					//Clears timmer so timmer is 0 at start of action phase
 			}
 		}
-		if(stage == true){
-			servoAction();
+		if(stage == true){						//Action phase or stage
+			servoAction();						//functions that are defined by the planning as to waht they should do during action
 			solidGlassAction();
 			colorGlassAction();
-
-			if(time1(T1) > ACTIONTIME + 1000){
-				startMotor(lineMotor,0);
+			if(time1(T1) > ACTIONTIME + 1000){	//Defines the ending of the Action phase by action time + 1 sec
+				startMotor(lineMotor,0);		//Sets sensor modual motors to stop moving in case they're still moving; as they should not be moving in Planning phase
 				startMotor(lightMotor,0);
-				stage = false;
+				stage = false;					//Sets phase to Planning 
 			}
 		}
 	}
