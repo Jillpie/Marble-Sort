@@ -98,23 +98,23 @@
 		}
 	}
 
-	void servoAction(){
-		if(time1(T1) > ((3 * ACTIONTIME)/4) && time1(T1) < ACTIONTIME){
-			startMotor(tickServo,SERVOLETIN);
+	void servoAction(){							//Controls the servo tick; or intake of the marbles
+		if(time1(T1) > ((3 * ACTIONTIME)/4) && time1(T1) < ACTIONTIME){	//the 3rd time block 
+			startMotor(tickServo,SERVOLETIN);	//Postitions servo to "LET IN" a marble in side of it 
 		}
-		if(time1(T1) >= ACTIONTIME){
-			startMotor(tickServo,SERVOLETOUT);
+		if(time1(T1) >= ACTIONTIME){			//Time block 4 or the ending portion of the ACTION TIME
+			startMotor(tickServo,SERVOLETOUT);	//Positions servo to Nutral letting out the marble it was holding in
 		}
 	}
 
-	void pistionAction(){
-		if(pistionStage == true){
-			startMotor(pistionMotor,MOTORPOWER);
+	void pistionAction(){						//Defines how to move pistion motor to help hopper
+		if(pistionStage == true){				//Pistion works with two phases, push and pull; ergo two positions required
+			startMotor(pistionMotor,MOTORPOWER);//Sets power to the motor contoling the pistion or prodding axle
 			if(SensorValue(potPistion) > PISTIONMAX){
-				pistionStage = false;
+				pistionStage = false;			//Makes sure after a certain distance the phase changes between push or pull
 			}
 		}
-		if(pistionStage == false){
+		if(pistionStage == false){				//Secound stage of the piston( I think this should be the pull part? but it dont matter)
 			startMotor(pistionMotor,-MOTORPOWER);
 			if(SensorValue(potPistion) < PISTIONMIN){
 				pistionStage = true;
@@ -122,7 +122,7 @@
 		}
 	}
 
-	void solidGlassAction(){
+	void solidGlassAction(){					//
 		if((time1(T1) > ((2 * ACTIONTIME)/4)) && (time1(T1) < ((3 * ACTIONTIME)/4))){
 			if(marbleTypeLine == false){
 				if(SensorValue(potLine) > POTFALLRIGHT){
@@ -151,10 +151,10 @@
 			if((SensorValue(potLine) < POTNEUTRAL + 100) && (SensorValue(potLine) > POTNEUTRAL - 100)){
 				startMotor(lineMotor,0);
 			}
-		}
+		}					
 	}
 
-	void colorGlassAction(){
+	void colorGlassAction(){					//
 		if((time1(T1) > ((1 * ACTIONTIME)/4)) && (time1(T1) < ((2 * ACTIONTIME)/4))){
 			if(marbleColorLight == false){
 				if(SensorValue(potLight) > POTFALLRIGHT){
