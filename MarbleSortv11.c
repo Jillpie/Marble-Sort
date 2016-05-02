@@ -10,6 +10,7 @@
 #pragma config(Motor,  port3,           lightMotor,    tmotorVex393_MC29, openLoop)
 #pragma config(Motor,  port5,           lineMotor,     tmotorVex393_MC29, openLoop)
 #pragma config(Motor,  port6,           tickServo,     tmotorServoStandard, openLoop)
+#pragma config(Motor,  port7,           jamMotor,     tmotorVex393_MC29, openLoop)
 
 //VARIBLES AND CONSTANTS:
 	//Task Main FLow Control and Debug:
@@ -31,11 +32,11 @@
 			int colorGlassGlass;
 			int colorGlassColor;
 			bool colorGlassFin = false;
-			int LIGHTCOLOR = 350;
+			int LIGHTCOLOR = 400;
 			int COLORTRESH = 5;
 
 	//Action Functions:
-		int ACTIONTIME = 4000;
+		int ACTIONTIME = 3000;
 
 		//Servo Action:
 			int SERVOLETIN = -110;
@@ -47,6 +48,7 @@
 			int PISTIONMIN = 350;
 			int PISTIONMAX = 1400;
 
+		//Jamming Action:
 
 	//Universal Constants:
 		int POTFALLRIGHT = 650;
@@ -122,6 +124,10 @@
 		}
 	}
 
+	void jammingAction(){
+		startMotor(jamMotor, MOTORPOWER * -2);
+	}
+
 	void solidGlassAction(){					//
 		if((time1(T1) > ((2 * ACTIONTIME)/4)) && (time1(T1) < ((3 * ACTIONTIME)/4))){
 			if(marbleTypeLine == false){
@@ -190,6 +196,7 @@
 task main(){
 	while(true){								//Main Loop everytihng should be in; unless it should be ran only once
 		pistionAction();						//Not part of a phase; preforms piston function 
+		jammingAction();
 		if(stage == false){						//If planning stage:
 			solidGlassPlanSea();				//Run these functions
 			colorGlassPlanSea();
