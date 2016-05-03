@@ -11,9 +11,12 @@
 #pragma config(Motor,  port5,           lineMotor,     tmotorVex393_MC29, openLoop)
 #pragma config(Motor,  port6,           tickServo,     tmotorServoStandard, openLoop)
 #pragma config(Motor,  port7,           jamMotor,     tmotorVex393_MC29, openLoop)
+#pragma config(Motor,  port8,           elevatorMotor,     tmotorVex393_MC29, openLoop)
+#pragma config(Motor,  port9,          	gateMotor,     tmotorVex393_MC29, openLoop)
 
 //VARIBLES AND CONSTANTS:
 	//Task Main FLow Control and Debug:
+		bool status = false;
 		bool stage = false;
 
 	//Planning Functions:
@@ -49,6 +52,17 @@
 			int PISTIONMAX = 1400;
 
 		//Jamming Action:
+
+		//Button1 Triggered:
+			bool button1Trigger = false;
+			bool button1Pressed = false;
+
+		//Button2 Triggered:
+			bool button2Trigger = false;
+			bool button2Pressed = false;
+
+		//Con System:
+			bool conToggle = false;
 
 	//Universal Constants:
 		int POTFALLRIGHT = 650;
@@ -190,31 +204,85 @@
 				startMotor(lightMotor,0);
 			}
 		}
+	}
 
+	void resetActu(){
+		startMotor(pistionMotor, 0);
+		startMotor(lightMotor, 0);
+		startMotor(lineMotor, 0);
+		startMotor(jamMotor, 0);
+		startMotor(gateMotor, 0);
+		startMotor(elevatorMotor, 0);
+	}
+
+	void button1Triggered(){
+		if(SensorValue(button1) == 1 ){
+			button1Trigger = true;
+		}
+		if((SensorValue(button1) == 0) && (button1Pressed == true)){
+			button1Pressed = true;
+		}
+	}
+
+	void button2Triggered(){
+		if(SensorValue(button2) == 1 ){
+			button2Trigger = true;
+		}
+		if((SensorValue(button2) == 0) && (button2Pressed == true)){
+			button2Pressed = true;
+		}
+	}
+
+	void statusControl(){
+		if((status == false) && (button1Pressed == true)){
+			button1Pressed = false;
+			status = true;
+		}
+		if((status == true) && (button1Pressed == true)){
+			button1Pressed = false;
+			status = false;
+			resetActu();
+		}
+	}
+
+	void conSystem(){
+		
 	}
 
 task main(){
 	while(true){								//Main Loop everytihng should be in; unless it should be ran only once
-		pistionAction();						//Not part of a phase; preforms piston function 
-		jammingAction();
-		if(stage == false){						//If planning stage:
-			solidGlassPlanSea();				//Run these functions
-			colorGlassPlanSea();
-			if((solidGlassFin == true) && (colorGlassFin == true)){
-				stage = true;					//Sets the phase to Action unlimatly making planning complete
-				solidGlassFin = false;
-				colorGlassFin = false;			//Sets the planning stage functions to false making the program run planning when its done after action
-				clearTimer(T1);					//Clears timmer so timmer is 0 at start of action phase
+		button1Triggered();
+		statusControl();
+		if(status == true){
+			if((button2Pressed == true) && (conToggle == false)){
+				conSystem();
+				conToggle = true;
 			}
-		}
-		if(stage == true){						//Action phase or stage
-			servoAction();						//functions that are defined by the planning as to waht they should do during action
-			solidGlassAction();
-			colorGlassAction();
-			if(time1(T1) > ACTIONTIME + 1000){	//Defines the ending of the Action phase by action time + 1 sec
-				startMotor(lineMotor,0);		//Sets sensor modual motors to stop moving in case they're still moving; as they should not be moving in Planning phase
-				startMotor(lightMotor,0);
-				stage = false;					//Sets phase to Planning 
+			if((button2Pressed == true) && (conToggle == true)){
+				resetActu();
+				conToggle = false;
+			}
+			pistionAction();						//Not part of a phase; preforms piston function 
+			jammingAction();
+			if(stage == false){						//If planning stage:
+				solidGlassPlanSea();				//Run these functions
+				colorGlassPlanSea();
+				if((solidGlassFin == true) && (colorGlassFin == true)){
+					stage = true;					//Sets the phase to Action unlimatly making planning complete
+					solidGlassFin = false;
+					colorGlassFin = false;			//Sets the planning stage functions to false making the program run planning when its done after action
+					clearTimer(T1);					//Clears timmer so timmer is 0 at start of action phase
+				}
+			}
+			if(stage == true){						//Action phase or stage
+				servoAction();						//functions that are defined by the planning as to waht they should do during action
+				solidGlassAction();
+				colorGlassAction();
+				if(time1(T1) > ACTIONTIME + 1000){	//Defines the ending of the Action phase by action time + 1 sec
+					startMotor(lineMotor,0);		//Sets sensor modual motors to stop moving in case they're still moving; as they should not be moving in Planning phase
+					startMotor(lightMotor,0);
+					stage = false;					//Sets phase to Planning 
+				}
 			}
 		}
 	}
