@@ -278,7 +278,7 @@
 		conGate();
 		if(((button2Pressed == true) && (conToggle == false)) || time1(T3) >= CONTIME){
 			startMotor(elevatorMotor,MOTORPOWER);
-			if(SensorValue(eleEncoder) >= (ELEPHY * phyI){
+			if(SensorValue(eleEncoder) >= (ELEPHY * phyI)){
 				phyI ++;
 				gateSea = true;
 			}
