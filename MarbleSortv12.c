@@ -231,7 +231,7 @@
 		if(SensorValue(button1) == 1 ){
 			button1Trigger = true;
 		}
-		if((SensorValue(button1) == 0) && (button1Pressed == true)){
+		if((SensorValue(button1) == 0) && (button1Trigger == true)){
 			button1Pressed = true;
 		}
 	}
@@ -240,7 +240,7 @@
 		if(SensorValue(button2) == 1 ){
 			button2Trigger = true;
 		}
-		if((SensorValue(button2) == 0) && (button2Pressed == true)){
+		if((SensorValue(button2) == 0) && (button2Trigger == true)){
 			button2Pressed = true;
 		}
 	}
@@ -286,6 +286,7 @@
 		}
 		if((button2Pressed == true) && (conToggle == true)){
 			resetActu();
+			button2Pressed = false;
 			clearTimer(T3);
 			conToggle = false;
 		}
