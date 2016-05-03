@@ -3,6 +3,8 @@
 #pragma config(Sensor, in3,    potLine,        sensorPotentiometer)
 #pragma config(Sensor, in4,    potPistion,     sensorPotentiometer)
 #pragma config(Sensor, in5,    potLight,       sensorPotentiometer)
+#pragma config(Sensor, in6,    potGate,    	   sensorPotentiometer)
+#pragma config(Sensor, dgtl3,  eleEncoder,     sensorTouch)
 #pragma config(Sensor, dgtl11, button1,        sensorTouch)
 #pragma config(Sensor, dgtl12, button2,        sensorTouch)
 #pragma config(Motor,  port1,           lightFlashlight, tmotorVexFlashlight, openLoop, reversed)
@@ -61,8 +63,18 @@
 			bool button2Trigger = false;
 			bool button2Pressed = false;
 
-		//Con System:
-			bool conToggle = false;
+		//Cons:
+			int CONTIME = 150000;
+
+			//System:
+				bool conToggle = false;
+				int ELEPHY = 600;
+				int phyI = 1;
+
+			//Gate:
+				bool gateSea = false;
+				int POTGATEOPEN = 600;
+				int POTGATECLOSE = 200;
 
 	//Universal Constants:
 		int POTFALLRIGHT = 650;
@@ -245,23 +257,47 @@
 		}
 	}
 
+	void conGate(){
+		if(gateSea == true){
+			if(SensorValue(potGate) <= POTGATEOPEN){
+				startMotor(gateMotor, MOTORPOWER * -2);
+			}else{
+				gateSea = false;
+			}
+		}
+		if(gateSea == false){
+			if(SensorValue(potGate) >= POTGATECLOSE){
+				startMotor(gateMotor, MOTORPOWER * 2);
+			}else{
+				startMotor(gateMotor, 0);
+			}
+		}
+	}
+
 	void conSystem(){
-		
+		conGate();
+		if(((button2Pressed == true) && (conToggle == false)) || time1(T3) >= CONTIME){
+			startMotor(elevatorMotor,MOTORPOWER);
+			if(SensorValue(eleEncoder) >= (ELEPHY * phyI){
+				phyI ++;
+				gateSea = true;
+			}
+			conToggle = true;
+		}
+		if((button2Pressed == true) && (conToggle == true)){
+			resetActu();
+			clearTimer(T3);
+			conToggle = false;
+		}
 	}
 
 task main(){
 	while(true){								//Main Loop everytihng should be in; unless it should be ran only once
 		button1Triggered();
+		button2Triggered();
 		statusControl();
 		if(status == true){
-			if((button2Pressed == true) && (conToggle == false)){
-				conSystem();
-				conToggle = true;
-			}
-			if((button2Pressed == true) && (conToggle == true)){
-				resetActu();
-				conToggle = false;
-			}
+			conSystem();
 			pistionAction();						//Not part of a phase; preforms piston function 
 			jammingAction();
 			if(stage == false){						//If planning stage:
