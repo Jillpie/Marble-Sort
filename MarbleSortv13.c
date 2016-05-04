@@ -3,14 +3,15 @@
 #pragma config(Sensor, in3,    potLine,        sensorPotentiometer)
 #pragma config(Sensor, in4,    potPistion,     sensorPotentiometer)
 #pragma config(Sensor, in5,    potLight,       sensorPotentiometer)
-#pragma config(Sensor, dgtl11, button1,        sensorTouch)
-#pragma config(Sensor, dgtl12, button2,        sensorTouch)
+#pragma config(Sensor, in6,    potGate,    	   sensorPotentiometer)
 #pragma config(Motor,  port1,           lightFlashlight, tmotorVexFlashlight, openLoop, reversed)
 #pragma config(Motor,  port2,           pistionMotor,  tmotorVex393_MC29, openLoop)
 #pragma config(Motor,  port3,           lightMotor,    tmotorVex393_MC29, openLoop)
 #pragma config(Motor,  port5,           lineMotor,     tmotorVex393_MC29, openLoop)
 #pragma config(Motor,  port6,           tickServo,     tmotorServoStandard, openLoop)
 #pragma config(Motor,  port7,           jamMotor,     tmotorVex393_MC29, openLoop)
+#pragma config(Motor,  port8,           elevatorMotor,     tmotorVex393_MC29, openLoop)
+#pragma config(Motor,  port9,          	gateMotor,     tmotorVex393_MC29, openLoop)
 
 //VARIBLES AND CONSTANTS:
 	//Task Main FLow Control and Debug:
@@ -47,8 +48,6 @@
 			bool pistionStage = false;
 			int PISTIONMIN = 350;
 			int PISTIONMAX = 1400;
-
-		//Jamming Action:
 
 	//Universal Constants:
 		int POTFALLRIGHT = 650;
@@ -160,7 +159,7 @@
 		}					
 	}
 
-	void colorGlassAction(){					//
+	void colorGlassAction(){
 		if((time1(T1) > ((1 * ACTIONTIME)/4)) && (time1(T1) < ((2 * ACTIONTIME)/4))){
 			if(marbleColorLight == false){
 				if(SensorValue(potLight) > POTFALLRIGHT){
@@ -216,5 +215,6 @@ task main(){
 				stage = false;					//Sets phase to Planning 
 			}
 		}
+		
 	}
 }
